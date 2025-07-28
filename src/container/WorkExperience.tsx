@@ -136,13 +136,15 @@ const WorkExperience: React.FC = () => {
           </div>
         </React.Fragment>
       ))}
-      <div className="flex gap-4 mt-4">
+      <div className={`flex gap-4 mt-4 ${workEntries.length === 1 ? "justify-center" : ""}`}>
         <Button onClick={addWorkEntry}>
           Add more
         </Button>
-        <Button onClick={removeLastWorkEntry} className="bg-pink-100 hover:bg-pink-200 border-pink-200">
-          Remove last
-        </Button>
+        {workEntries.length > 1 && (
+          <Button onClick={removeLastWorkEntry} className="bg-pink-100 hover:bg-pink-200 border-pink-200">
+            Remove last
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -112,13 +112,15 @@ const Education: React.FC = () => {
           </div>
         </React.Fragment>
       ))}
-      <div className="flex gap-4 mt-4">
+      <div className={`flex gap-4 mt-4 ${educationEntries.length === 1 ? "justify-center" : ""}`}>
         <Button onClick={addEducationEntry}>
           Add more
         </Button>
-        <Button onClick={removeLastEducationEntry} className="bg-pink-100 hover:bg-pink-200 border-pink-200">
-          Remove last
-        </Button>
+        {educationEntries.length > 1 && (
+          <Button onClick={removeLastEducationEntry} className="bg-pink-100 hover:bg-pink-200 border-pink-200">
+            Remove last
+          </Button>
+        )}
       </div>
     </div>
   );
