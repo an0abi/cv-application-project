@@ -13,6 +13,7 @@ const WorkExperience: React.FC = () => {
       description: "",
     },
   ]);
+  const [dateErrors, setDateErrors] = useState<string[]>([""]);
 
   const addWorkEntry = () => {
     setWorkEntries([
@@ -26,11 +27,13 @@ const WorkExperience: React.FC = () => {
         description: "",
       },
     ]);
+    setDateErrors([...dateErrors, ""]);
   };
 
   const removeLastWorkEntry = () => {
     if (workEntries.length > 1) {
       setWorkEntries(workEntries.slice(0, -1));
+      setDateErrors(dateErrors.slice(0, -1));
     }
   };
 
@@ -40,6 +43,23 @@ const WorkExperience: React.FC = () => {
         i === idx ? { ...entry, [field]: value } : entry
       )
     );
+    if (field === "startDate" || field === "endDate") {
+      const entry = {
+        ...workEntries[idx],
+        [field]: value,
+      };
+      let error = "";
+      if (
+        entry.startDate &&
+        entry.endDate &&
+        entry.startDate > entry.endDate
+      ) {
+        error = "Start Date must be earlier than or equal to End Date.";
+      }
+      setDateErrors((prev) =>
+        prev.map((err, i) => (i === idx ? error : err))
+      );
+    }
   };
 
   return (
@@ -74,6 +94,8 @@ const WorkExperience: React.FC = () => {
                   name={`startDate-${entry.id}`}
                   placeholder="Start Date"
                   className="w-40"
+                  value={entry.startDate}
+                  onChange={e => handleChange(idx, "startDate", e.target.value)}
                 />
               </label>
               <label>
@@ -82,9 +104,18 @@ const WorkExperience: React.FC = () => {
                   name={`endDate-${entry.id}`}
                   placeholder="End Date"
                   className="w-40"
+                  value={entry.endDate}
+                  onChange={e => handleChange(idx, "endDate", e.target.value)}
                 />
               </label>
             </div>
+            {dateErrors[idx] && (
+              <div className="w-full flex flex-col items-center">
+                <span className="text-red-500 text-xs text-center mt-1 block">
+                  {dateErrors[idx]}
+                </span>
+              </div>
+            )}
             <div className="flex justify-center items-center">
               <label className="w-full">
                 <textarea

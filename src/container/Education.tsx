@@ -98,7 +98,6 @@ const Education: React.FC = () => {
                   placeholder="Year of Graduation"
                   value={entry.graduationYear}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    // Pozwól tylko na cyfry i max 4 znaki
                     const val = e.target.value.replace(/\D/g, "").slice(0, 4);
                     handleInputChange(idx, "graduationYear", val);
                   }}
