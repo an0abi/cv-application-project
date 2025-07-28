@@ -1,12 +1,17 @@
 import React from 'react';
 import './App.css'
-import CVEditor from './components/CVEditor';
+import GeneralInfo from './container/GeneralInfo';
+import Education from './container/Education';
+import WorkExperience from './container/WorkExperience';
 
 function App() {
 
   return (
-    <div>
-      <CVEditor/>
+    <div className='justify-center items-center flex flex-col bg-indigo-200  p-10 gap-10'>
+      <h1 className='text-indigo-950 text-4xl font-bold'>CV Creator</h1>
+      <GeneralInfo/>
+      <Education/>
+      <WorkExperience/>
     </div>
 
   )
