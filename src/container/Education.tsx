@@ -6,17 +6,43 @@ const Education: React.FC = () => {
   const [educationEntries, setEducationEntries] = useState([
     { id: 1, school: "", degree: "", field: "", graduationYear: "" },
   ]);
+  const [graduationYearErrors, setGraduationYearErrors] = useState<string[]>([""]);
 
   const addEducationEntry = () => {
     setEducationEntries([
       ...educationEntries,
       { id: Date.now(), school: "", degree: "", field: "", graduationYear: "" },
     ]);
+    setGraduationYearErrors([...graduationYearErrors, ""]);
   };
 
   const removeLastEducationEntry = () => {
     if (educationEntries.length > 1) {
       setEducationEntries(educationEntries.slice(0, -1));
+      setGraduationYearErrors(graduationYearErrors.slice(0, -1));
+    }
+  };
+
+  const handleInputChange = (
+    idx: number,
+    field: string,
+    value: string
+  ) => {
+    setEducationEntries((prev) =>
+      prev.map((entry, i) =>
+        i === idx ? { ...entry, [field]: value } : entry
+      )
+    );
+    if (field === "graduationYear") {
+      let error = "";
+      if (value.length === 0) {
+        error = "";
+      } else if (!/^\d{4}$/.test(value)) {
+        error = "Please enter a valid 4-digit year.";
+      }
+      setGraduationYearErrors((prev) =>
+        prev.map((err, i) => (i === idx ? error : err))
+      );
     }
   };
 
@@ -35,6 +61,10 @@ const Education: React.FC = () => {
                   type="text"
                   name={`school-${entry.id}`}
                   placeholder="School/University Name"
+                  value={entry.school}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(idx, "school", e.target.value)
+                  }
                 />
               </label>
               <label>
@@ -42,6 +72,10 @@ const Education: React.FC = () => {
                   type="text"
                   name={`degree-${entry.id}`}
                   placeholder="Degree/Qualification"
+                  value={entry.degree}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(idx, "degree", e.target.value)
+                  }
                 />
               </label>
             </div>
@@ -51,6 +85,10 @@ const Education: React.FC = () => {
                   type="text"
                   name={`field-${entry.id}`}
                   placeholder="Field of Study"
+                  value={entry.field}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(idx, "field", e.target.value)
+                  }
                 />
               </label>
               <label>
@@ -58,7 +96,18 @@ const Education: React.FC = () => {
                   type="text"
                   name={`graduationYear-${entry.id}`}
                   placeholder="Year of Graduation"
+                  value={entry.graduationYear}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    // Pozwól tylko na cyfry i max 4 znaki
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+                    handleInputChange(idx, "graduationYear", val);
+                  }}
                 />
+                {graduationYearErrors[idx] && (
+                  <span className="text-red-500 text-xs text-center mt-1 block">
+                    {graduationYearErrors[idx]}
+                  </span>
+                )}
               </label>
             </div>
           </div>
