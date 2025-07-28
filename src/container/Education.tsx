@@ -6,20 +6,17 @@ const Education: React.FC = () => {
   const [educationEntries, setEducationEntries] = useState([
     { id: 1, school: "", degree: "", field: "", graduationYear: "" },
   ]);
-  const [graduationYearErrors, setGraduationYearErrors] = useState<string[]>([""]);
 
   const addEducationEntry = () => {
     setEducationEntries([
       ...educationEntries,
       { id: Date.now(), school: "", degree: "", field: "", graduationYear: "" },
     ]);
-    setGraduationYearErrors([...graduationYearErrors, ""]);
   };
 
   const removeLastEducationEntry = () => {
     if (educationEntries.length > 1) {
       setEducationEntries(educationEntries.slice(0, -1));
-      setGraduationYearErrors(graduationYearErrors.slice(0, -1));
     }
   };
 
@@ -33,17 +30,6 @@ const Education: React.FC = () => {
         i === idx ? { ...entry, [field]: value } : entry
       )
     );
-    if (field === "graduationYear") {
-      let error = "";
-      if (value.length === 0) {
-        error = "";
-      } else if (!/^\d{4}$/.test(value)) {
-        error = "Please enter a valid 4-digit year.";
-      }
-      setGraduationYearErrors((prev) =>
-        prev.map((err, i) => (i === idx ? error : err))
-      );
-    }
   };
 
   return (
@@ -93,20 +79,15 @@ const Education: React.FC = () => {
               </label>
               <label>
                 <InputField
-                  type="text"
+                  type="month"
                   name={`graduationYear-${entry.id}`}
                   placeholder="Year of Graduation"
+                  className="w-40"
                   value={entry.graduationYear}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const val = e.target.value.replace(/\D/g, "").slice(0, 4);
-                    handleInputChange(idx, "graduationYear", val);
-                  }}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(idx, "graduationYear", e.target.value)
+                  }
                 />
-                {graduationYearErrors[idx] && (
-                  <span className="text-red-500 text-xs text-center mt-1 block">
-                    {graduationYearErrors[idx]}
-                  </span>
-                )}
               </label>
             </div>
           </div>
