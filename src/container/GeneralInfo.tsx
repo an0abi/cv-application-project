@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
+const FRAME_WIDTH = 260;
+const FRAME_HEIGHT = 240;
+
 const GeneralInfo: React.FC = () => {
   const [photo, setPhoto] = useState<string | null>(null);
+  const [name, setName] = useState<string>("");
+  const [nameError, setNameError] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [phoneError, setPhoneError] = useState<string>("");
+
+  const [imgPosition, setImgPosition] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const dragStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const imgStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [imgSize, setImgSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -17,14 +30,92 @@ const GeneralInfo: React.FC = () => {
     }
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const words = value.trim().split(/\s+/);
+    if (words.length <= 2) {
+      setName(value);
+      setNameError("");
+    } else {
+      setNameError("Please enter only first and last name (two words).");
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^[0-9-]*$/.test(value)) {
+      setPhone(value);
+      if (value.length === 0 || /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/.test(value)) {
+        setPhoneError("");
+      } else {
+        setPhoneError("Phone number must be in the format: 000-000-000");
+      }
+    } else {
+      setPhoneError("Phone number must be in the format: 000-000-000");
+    }
+  };
+
+  const handleImgMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
+    setDragging(true);
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    imgStart.current = { ...imgPosition };
+    e.preventDefault();
+  };
+
+  const handleImgMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!dragging) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    let newX = imgStart.current.x + dx;
+    let newY = imgStart.current.y + dy;
+
+    const minX = Math.min(0, FRAME_WIDTH - imgSize.width);
+    const maxX = 0;
+    const minY = Math.min(0, FRAME_HEIGHT - imgSize.height);
+    const maxY = 0;
+
+    newX = Math.max(minX, Math.min(maxX, newX));
+    newY = Math.max(minY, Math.min(maxY, newY));
+
+    setImgPosition({ x: newX, y: newY });
+  };
+
+  const handleImgMouseUp = () => {
+    setDragging(false);
+  };
+
+  const handleImgLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const { width, height } = e.currentTarget;
+    setImgSize({ width, height });
+    setImgPosition({
+      x: Math.max(0, (FRAME_WIDTH - width) / 2),
+      y: Math.max(0, (FRAME_HEIGHT - height) / 2),
+    });
+  };
+
   return (
-    <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center">
+    <div
+      className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center"
+    >
       <div className="text-2xl font-bold text-indigo-950 pb-3">
         General Info
       </div>
       <div className="flex justify-evenly gap-8">
         <label>
-          <InputField type="text" name="name" placeholder="First & Last Name" />
+          <InputField
+            type="text"
+            name="name"
+            placeholder="First & Last Name"
+            value={name}
+            onChange={handleNameChange}
+          />
+          <div className="flex flex-col items-center w-full">
+            {nameError && (
+              <span className="text-red-500 text-xs text-center mt-1 w-full">
+                {nameError}
+              </span>
+            )}
+          </div>
         </label>
         <label>
           <InputField type="email" name="email" placeholder="Email" />
@@ -36,9 +127,17 @@ const GeneralInfo: React.FC = () => {
             type="tel"
             name="phone"
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}"
-            title="Phone number must be in the format: 000-000-000"
             placeholder="Phone"
+            value={phone}
+            onChange={handlePhoneChange}
           />
+          <div className="flex flex-col items-center w-full">
+            {phoneError && (
+              <span className="text-red-500 text-xs text-center mt-1 w-full">
+                {phoneError}
+              </span>
+            )}
+          </div>
         </label>
         <label>
           <InputField type="city" name="city" placeholder="City" />
@@ -59,12 +158,32 @@ const GeneralInfo: React.FC = () => {
         Click to upload photo
       </Button>
       <div className="flex flex-col items-center gap-2">
-        <div className="w-65 h-60 border-2 border-indigo-100 flex justify-center items-center">
+        <div
+          className="w-65 h-60 border-2 border-indigo-100 flex justify-center items-center overflow-hidden relative"
+          style={{
+            userSelect: "none",
+            cursor: dragging ? "grabbing" : "grab",
+            width: FRAME_WIDTH,
+            height: FRAME_HEIGHT,
+          }}
+          onMouseMove={handleImgMouseMove}
+          onMouseUp={handleImgMouseUp}
+          onMouseLeave={handleImgMouseUp}
+        >
           {photo ? (
             <img
               src={photo}
               alt="Preview"
-              className="object-cover w-full h-full"
+              className="absolute"
+              style={{
+                left: imgPosition.x,
+                top: imgPosition.y,
+                position: "absolute",
+                pointerEvents: "auto",
+              }}
+              draggable={false}
+              onMouseDown={handleImgMouseDown}
+              onLoad={handleImgLoad}
             />
           ) : (
             <span className="text-gray-400">No photo</span>
