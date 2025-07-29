@@ -18,9 +18,6 @@ const GeneralInfo: React.FC = () => {
   const imgStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [imgSize, setImgSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
 
-  const [about, setAbout] = useState<string>("");
-  const aboutRef = useRef<HTMLTextAreaElement>(null);
-
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
@@ -55,15 +52,6 @@ const GeneralInfo: React.FC = () => {
       }
     } else {
       setPhoneError("Phone number must be in the format: 000-000-000");
-    }
-  };
-
-  const handleAboutChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value.slice(0, 400);
-    setAbout(value);
-    if (aboutRef.current) {
-      aboutRef.current.style.height = "auto";
-      aboutRef.current.style.height = aboutRef.current.scrollHeight + "px";
     }
   };
 
@@ -155,22 +143,7 @@ const GeneralInfo: React.FC = () => {
           <InputField type="city" name="city" placeholder="City" />
         </label>
       </div>
-      <div className="flex flex-col items-center w-full">
-        <label className="w-full flex flex-col items-center">
-          <span className="text-indigo-950 font-medium mb-2 text-center">About me</span>
-          <textarea
-            ref={aboutRef}
-            value={about}
-            onChange={handleAboutChange}
-            maxLength={400}
-            rows={2}
-            placeholder="Write something about yourself..."
-            className="resize-none w-150 min-h-[48px] max-h-60 p-2 border-1 border-indigo-200 rounded text-center hover:border-indigo-300 focus:outline-none"
-            style={{ overflow: "hidden" }}
-          />
-          <span className="text-xs text-gray-400 mt-1">{about.length}/400</span>
-        </label>
-      </div>
+      <div></div>
       <input
         type="file"
         id="file_input"
