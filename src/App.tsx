@@ -3,6 +3,8 @@ import './App.css'
 import GeneralInfo from './container/GeneralInfo';
 import Education from './container/Education';
 import WorkExperience from './container/WorkExperience';
+import Skills from './container/Skills';
+import Languages from './container/Languages';
 
 function App() {
 
@@ -12,6 +14,8 @@ function App() {
       <GeneralInfo/>
       <Education/>
       <WorkExperience/>
+      <Skills/>
+      <Languages/>
     </div>
 
   )
