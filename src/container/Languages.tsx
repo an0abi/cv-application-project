@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
-const languageLevels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const languageLevels = ["A1", "A2", "B1", "B2", "C1", "C2", "Native"];
 
 const Languages: React.FC = () => {
   const [languages, setLanguages] = useState([{ id: 1, value: "", level: "A1" }]);

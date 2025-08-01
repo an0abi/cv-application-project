@@ -165,7 +165,7 @@ const GeneralInfo: React.FC = () => {
             maxLength={400}
             rows={2}
             placeholder="Write something about yourself..."
-            className="resize-none w-96 min-h-[48px] max-h-60 p-2 border border-indigo-100 rounded text-center hover:border-indigo-300 focus:outline-none"
+            className="resize-none w-96 min-h-[48px] max-h-60 p-2 border border-indigo-200 rounded text-center hover:border-indigo-300 focus:outline-none"
             style={{ overflow: "hidden" }}
           />
           <span className="text-xs text-gray-400 mt-1">{about.length}/400</span>
@@ -186,7 +186,7 @@ const GeneralInfo: React.FC = () => {
       </Button>
       <div className="flex flex-col items-center gap-2">
         <div
-          className="w-65 h-60 border-2 border-indigo-100 flex justify-center items-center overflow-hidden relative"
+          className="w-65 h-60 border-1 border-indigo-200 rounded flex justify-center items-center overflow-hidden relative"
           style={{
             userSelect: "none",
             cursor: dragging ? "grabbing" : "grab",
