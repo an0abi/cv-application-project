@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { useCV } from "../context/CVContext";
+import { FaGraduationCap } from "react-icons/fa";
 
 const Preview: React.FC = () => {
   const navigate = useNavigate();
@@ -39,7 +40,9 @@ const Preview: React.FC = () => {
                       alt="Photo"
                       className="w-48 h-48 object-cover rounded-full"
                     />
-                    <p className="font-bold text-2xl">{state.generalInfo.name}</p>
+                    <p className="font-bold text-2xl">
+                      {state.generalInfo.name}
+                    </p>
                   </div>
                 )}
                 <div>
@@ -56,36 +59,52 @@ const Preview: React.FC = () => {
               </div>
               <div className="pt-8 max-w-1/3">
                 <p>
-                  <b>About me: <br /></b> {state.generalInfo.about}
+                  <b>
+                    About me: <br />
+                  </b>{" "}
+                  {state.generalInfo.about}
                 </p>
               </div>
             </div>
-            <div className="p-6">
-              <h3 className="font-medium text-gray-800">Education</h3>
+            <div className="p-10 text-3xl">
+              <div className="flex items-center gap-2">
+                <FaGraduationCap className="text-indigo-600" />
+                <h3 className="font-medium text-gray-800">Education</h3>
+              </div>
               {state.education.length > 0 ? (
-                <div className="text-gray-600 text-sm">
+                <div className="text-gray-600 text-sm flex flex-col gap-4 mt-4">
                   {state.education.map((e) => (
-                    <p key={e.id}>
-                      {e.school && <b>{e.school}</b>}
-                      {e.school &&
-                        (e.degree || e.field || e.graduationYear) &&
-                        ", "}
-                      {e.degree && <span>{e.degree}</span>}
-                      {e.degree && e.field && ", "}
-                      {e.field && <span>{e.field}</span>}
-                      {(e.degree || e.field) && e.graduationYear && ", "}
-                      {e.graduationYear && <span>{e.graduationYear}</span>}
+                    <div key={e.id} className="border-b pb-2">
+                      <div className="flex justify-between items-center">
+                        <b>
+                          {e.school || (
+                            <span className="text-gray-400">No school</span>
+                          )}
+                        </b>
+                        {e.graduationYear && (
+                          <span className="text-indigo-700 font-semibold">
+                            {e.graduationYear}
+                          </span>
+                        )}
+                      </div>
+                      {(e.degree || e.field) && (
+                        <div className="mt-1">
+                          {e.degree && <span>{e.degree}</span>}
+                          {e.degree && e.field && <span>, </span>}
+                          {e.field && <span>{e.field}</span>}
+                        </div>
+                      )}
                       {!e.school &&
                         !e.degree &&
                         !e.field &&
                         !e.graduationYear && (
                           <span className="text-gray-400">No information</span>
                         )}
-                    </p>
+                    </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-600 text-sm">Brak danych</p>
+                <p className="text-gray-600 text-sm">No data</p>
               )}
             </div>
             <div className="pb-2">
