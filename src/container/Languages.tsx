@@ -1,43 +1,43 @@
-import React, { useState } from "react";
+import React from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
 const languageLevels = ["A1", "A2", "B1", "B2", "C1", "C2", "Native"];
 
-const Languages: React.FC = () => {
-  const [languages, setLanguages] = useState([{ id: 1, value: "", level: "A1" }]);
+interface LanguagesProps {
+  value: Array<{ id: number; value: string; level: string }>;
+  setValue: (val: Array<{ id: number; value: string; level: string }>) => void;
+}
+
+const Languages: React.FC<LanguagesProps> = ({ value, setValue }) => {
 
   const addLanguage = () => {
-    setLanguages([...languages, { id: Date.now(), value: "", level: "A1" }]);
+    setValue([...value, { id: Date.now(), value: "", level: "A1" }]);
   };
 
   const removeLanguage = (idx: number) => {
-    if (languages.length > 1) {
-      setLanguages(languages.filter((_, i) => i !== idx));
+    if (value.length > 1) {
+      setValue(value.filter((_, i) => i !== idx));
     }
   };
 
-  const handleChange = (idx: number, value: string) => {
-    setLanguages(
-      languages.map((lang, i) => (i === idx ? { ...lang, value } : lang))
-    );
+  const handleChange = (idx: number, langValue: string) => {
+    setValue(value.map((lang, i) => (i === idx ? { ...lang, value: langValue } : lang)));
   };
 
   const handleLevelChange = (idx: number, level: string) => {
-    setLanguages(
-      languages.map((lang, i) => (i === idx ? { ...lang, level } : lang))
-    );
+    setValue(value.map((lang, i) => (i === idx ? { ...lang, level } : lang)));
   };
 
   return (
     <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center">
       <div className="text-2xl font-bold text-indigo-950 pb-3">Languages</div>
-      {languages.map((lang, idx) => (
+      {value.map((lang, idx) => (
         <div
           key={lang.id}
           className="relative w-full flex items-center justify-center gap-2"
         >
-          {languages.length > 1 && (
+          {value.length > 1 && (
             <button
               type="button"
               className="absolute top-1 right-0 text-violet-500 text-xl font-bold z-10 hover:text-violet-700"

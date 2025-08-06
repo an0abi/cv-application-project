@@ -1,43 +1,43 @@
-import React, { useState } from "react";
+import React from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
 const skillLevels = ["Beginner", "Intermediate", "Advanced", "Expert"];
 
-const Skills: React.FC = () => {
-  const [skills, setSkills] = useState([{ id: 1, value: "", level: "Beginner" }]);
+interface SkillsProps {
+  value: Array<{ id: number; value: string; level: string }>;
+  setValue: (val: Array<{ id: number; value: string; level: string }>) => void;
+}
+
+const Skills: React.FC<SkillsProps> = ({ value, setValue }) => {
 
   const addSkill = () => {
-    setSkills([...skills, { id: Date.now(), value: "", level: "Beginner" }]);
+    setValue([...value, { id: Date.now(), value: "", level: "Beginner" }]);
   };
 
   const removeSkill = (idx: number) => {
-    if (skills.length > 1) {
-      setSkills(skills.filter((_, i) => i !== idx));
+    if (value.length > 1) {
+      setValue(value.filter((_, i) => i !== idx));
     }
   };
 
-  const handleChange = (idx: number, value: string) => {
-    setSkills(
-      skills.map((skill, i) => (i === idx ? { ...skill, value } : skill))
-    );
+  const handleChange = (idx: number, skillValue: string) => {
+    setValue(value.map((skill, i) => (i === idx ? { ...skill, value: skillValue } : skill)));
   };
 
   const handleLevelChange = (idx: number, level: string) => {
-    setSkills(
-      skills.map((skill, i) => (i === idx ? { ...skill, level } : skill))
-    );
+    setValue(value.map((skill, i) => (i === idx ? { ...skill, level } : skill)));
   };
 
   return (
     <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center">
       <div className="text-2xl font-bold text-indigo-950 pb-3">Skills</div>
-      {skills.map((skill, idx) => (
+      {value.map((skill, idx) => (
         <div
           key={skill.id}
           className="relative w-full flex items-center justify-center gap-2"
         >
-          {skills.length > 1 && (
+          {value.length > 1 && (
             <button
               type="button"
               className="absolute top-1 right-0 text-violet-500 text-xl font-bold z-10 hover:text-violet-700"

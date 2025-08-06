@@ -1,24 +1,33 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
 const FRAME_WIDTH = 260;
 const FRAME_HEIGHT = 240;
 
-const GeneralInfo: React.FC = () => {
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [name, setName] = useState<string>("");
-  const [nameError, setNameError] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [phoneError, setPhoneError] = useState<string>("");
+interface GeneralInfoProps {
+  value: {
+    name: string;
+    email: string;
+    phone: string;
+    city: string;
+    photo: string | null;
+    about: string;
+  };
+  setValue: (val: any) => void;
+}
 
+const GeneralInfo: React.FC<GeneralInfoProps> = ({ value, setValue }) => {
+  const [nameError, setNameError] = useState<string>("");
+  const [phoneError, setPhoneError] = useState<string>("");
   const [imgPosition, setImgPosition] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const dragStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const imgStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [imgSize, setImgSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
-
-  const [about, setAbout] = useState<string>("");
+  const [imgSize, setImgSize] = useState<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  });
   const aboutRef = useRef<HTMLTextAreaElement>(null);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +35,7 @@ const GeneralInfo: React.FC = () => {
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.readyState === 2) {
-          setPhoto(reader.result as string);
+          setValue({ ...value, photo: reader.result as string });
         }
       };
       reader.readAsDataURL(e.target.files[0]);
@@ -34,10 +43,10 @@ const GeneralInfo: React.FC = () => {
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const words = value.trim().split(/\s+/);
+    const inputValue = e.target.value;
+    const words = inputValue.trim().split(/\s+/);
     if (words.length <= 2) {
-      setName(value);
+      setValue({ ...value, name: inputValue });
       setNameError("");
     } else {
       setNameError("Please enter only first and last name (two words).");
@@ -45,10 +54,13 @@ const GeneralInfo: React.FC = () => {
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^[0-9-]*$/.test(value)) {
-      setPhone(value);
-      if (value.length === 0 || /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/.test(value)) {
+    const inputValue = e.target.value;
+    if (/^[0-9-]*$/.test(inputValue)) {
+      setValue({ ...value, phone: inputValue });
+      if (
+        inputValue.length === 0 ||
+        /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/.test(inputValue)
+      ) {
         setPhoneError("");
       } else {
         setPhoneError("Phone number must be in the format: 000-000-000");
@@ -59,8 +71,8 @@ const GeneralInfo: React.FC = () => {
   };
 
   const handleAboutChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value.slice(0, 400);
-    setAbout(value);
+    const aboutText = e.target.value.slice(0, 400);
+    setValue({ ...value, about: aboutText });
     if (aboutRef.current) {
       aboutRef.current.style.height = "auto";
       aboutRef.current.style.height = aboutRef.current.scrollHeight + "px";
@@ -106,9 +118,7 @@ const GeneralInfo: React.FC = () => {
   };
 
   return (
-    <div
-      className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center"
-    >
+    <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center">
       <div className="text-2xl font-bold text-indigo-950 pb-3">
         General Info
       </div>
@@ -118,7 +128,7 @@ const GeneralInfo: React.FC = () => {
             type="text"
             name="name"
             placeholder="First & Last Name"
-            value={name}
+            value={value.name}
             onChange={handleNameChange}
           />
           <div className="flex flex-col items-center w-full">
@@ -130,7 +140,13 @@ const GeneralInfo: React.FC = () => {
           </div>
         </label>
         <label>
-          <InputField type="email" name="email" placeholder="Email" />
+          <InputField
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={value.email}
+            onChange={(e) => setValue({ ...value, email: e.target.value })}
+          />
         </label>
       </div>
       <div className="flex justify-evenly gap-8">
@@ -140,7 +156,7 @@ const GeneralInfo: React.FC = () => {
             name="phone"
             pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}"
             placeholder="Phone"
-            value={phone}
+            value={value.phone}
             onChange={handlePhoneChange}
           />
           <div className="flex flex-col items-center w-full">
@@ -152,15 +168,23 @@ const GeneralInfo: React.FC = () => {
           </div>
         </label>
         <label>
-          <InputField type="city" name="city" placeholder="City" />
+          <InputField
+            type="text"
+            name="city"
+            placeholder="City"
+            value={value.city}
+            onChange={e => setValue({ ...value, city: e.target.value })}
+          />
         </label>
       </div>
       <div className="flex flex-col items-center w-full">
         <label className="w-full flex flex-col items-center p-2">
-          <span className="text-indigo-950 font-medium mb-2 text-center">About me</span>
+          <span className="text-indigo-950 font-medium mb-2 text-center">
+            About me
+          </span>
           <textarea
             ref={aboutRef}
-            value={about}
+            value={value.about}
             onChange={handleAboutChange}
             maxLength={400}
             rows={2}
@@ -168,7 +192,9 @@ const GeneralInfo: React.FC = () => {
             className="resize-none w-96 min-h-[48px] max-h-60 p-2 border border-indigo-200 rounded text-center hover:border-indigo-300 focus:outline-none"
             style={{ overflow: "hidden" }}
           />
-          <span className="text-xs text-gray-400 mt-1">{about.length}/400</span>
+          <span className="text-xs text-gray-400 mt-1">
+            {value.about.length}/400
+          </span>
         </label>
       </div>
       <input
@@ -197,9 +223,9 @@ const GeneralInfo: React.FC = () => {
           onMouseUp={handleImgMouseUp}
           onMouseLeave={handleImgMouseUp}
         >
-          {photo ? (
+          {value.photo ? (
             <img
-              src={photo}
+              src={value.photo}
               alt="Preview"
               className="absolute"
               style={{

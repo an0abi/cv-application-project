@@ -1,33 +1,43 @@
-import React, { useState } from "react";
+import React from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
-const Education: React.FC = () => {
-  const [educationEntries, setEducationEntries] = useState([
-    { id: 1, school: "", degree: "", field: "", graduationYear: "" },
-  ]);
+type EducationEntry = {
+  id: number;
+  school: string;
+  degree: string;
+  field: string;
+  graduationYear: string;
+};
+
+type EducationProps = {
+  value: EducationEntry[];
+  setValue: React.Dispatch<React.SetStateAction<EducationEntry[]>>;
+};
+
+const Education: React.FC<EducationProps> = ({ value, setValue }) => {
 
   const addEducationEntry = () => {
-    setEducationEntries([
-      ...educationEntries,
+    setValue([
+      ...value,
       { id: Date.now(), school: "", degree: "", field: "", graduationYear: "" },
     ]);
   };
 
   const removeLastEducationEntry = () => {
-    if (educationEntries.length > 1) {
-      setEducationEntries(educationEntries.slice(0, -1));
+    if (value.length > 1) {
+      setValue(value.slice(0, -1));
     }
   };
 
   const handleInputChange = (
     idx: number,
     field: string,
-    value: string
+    fieldValue: string
   ) => {
-    setEducationEntries((prev) =>
+    setValue((prev) =>
       prev.map((entry, i) =>
-        i === idx ? { ...entry, [field]: value } : entry
+        i === idx ? { ...entry, [field]: fieldValue } : entry
       )
     );
   };
@@ -35,7 +45,7 @@ const Education: React.FC = () => {
   return (
     <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center">
       <div className="text-2xl font-bold text-indigo-950 pb-3">Education</div>
-      {educationEntries.map((entry, idx) => (
+      {value.map((entry, idx) => (
         <React.Fragment key={entry.id}>
           {idx > 0 && (
             <hr className="w-full border-t-2 border-indigo-200 my-4" />
@@ -93,11 +103,11 @@ const Education: React.FC = () => {
           </div>
         </React.Fragment>
       ))}
-      <div className={`flex gap-4 mt-4 ${educationEntries.length === 1 ? "justify-center" : ""}`}>
+      <div className={`flex gap-4 mt-4 ${value.length === 1 ? "justify-center" : ""}`}>
         <Button onClick={addEducationEntry}>
           Add more
         </Button>
-        {educationEntries.length > 1 && (
+        {value.length > 1 && (
           <Button onClick={removeLastEducationEntry} className="bg-pink-100 hover:bg-pink-200 border-pink-200">
             Remove last
           </Button>

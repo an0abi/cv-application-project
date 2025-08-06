@@ -2,22 +2,31 @@ import React, { useState } from "react";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
 
-const WorkExperience: React.FC = () => {
-  const [workEntries, setWorkEntries] = useState([
-    {
-      id: 1,
-      company: "",
-      position: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-    },
-  ]);
-  const [dateErrors, setDateErrors] = useState<string[]>([""]);
+interface WorkExperienceProps {
+  value: Array<{
+    id: number;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate: string;
+    description: string;
+  }>;
+  setValue: (val: Array<{
+    id: number;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate: string;
+    description: string;
+  }>) => void;
+}
+
+const WorkExperience: React.FC<WorkExperienceProps> = ({ value, setValue }) => {
+  const [dateErrors, setDateErrors] = useState<string[]>(Array(value.length).fill(""));
 
   const addWorkEntry = () => {
-    setWorkEntries([
-      ...workEntries,
+    setValue([
+      ...value,
       {
         id: Date.now(),
         company: "",
@@ -31,22 +40,18 @@ const WorkExperience: React.FC = () => {
   };
 
   const removeLastWorkEntry = () => {
-    if (workEntries.length > 1) {
-      setWorkEntries(workEntries.slice(0, -1));
+    if (value.length > 1) {
+      setValue(value.slice(0, -1));
       setDateErrors(dateErrors.slice(0, -1));
     }
   };
 
-  const handleChange = (idx: number, field: string, value: string) => {
-    setWorkEntries((prev) =>
-      prev.map((entry, i) =>
-        i === idx ? { ...entry, [field]: value } : entry
-      )
-    );
+  const handleChange = (idx: number, field: string, fieldValue: string) => {
+    setValue(value.map((entry, i) => i === idx ? { ...entry, [field]: fieldValue } : entry));
     if (field === "startDate" || field === "endDate") {
       const entry = {
-        ...workEntries[idx],
-        [field]: value,
+        ...value[idx],
+        [field]: fieldValue,
       };
       let error = "";
       if (
@@ -65,7 +70,7 @@ const WorkExperience: React.FC = () => {
   return (
     <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center">
       <div className="text-2xl font-bold text-indigo-950 pb-3">Work Experience</div>
-      {workEntries.map((entry, idx) => (
+      {value.map((entry, idx) => (
         <React.Fragment key={entry.id}>
           {idx > 0 && (
             <hr className="w-full border-t-2 border-indigo-200 my-4" />
@@ -77,6 +82,8 @@ const WorkExperience: React.FC = () => {
                   type="text"
                   name={`company-${entry.id}`}
                   placeholder="Company Name"
+                  value={entry.company}
+                  onChange={e => handleChange(idx, "company", e.target.value)}
                 />
               </label>
               <label>
@@ -84,6 +91,8 @@ const WorkExperience: React.FC = () => {
                   type="text"
                   name={`position-${entry.id}`}
                   placeholder="Position"
+                  value={entry.position}
+                  onChange={e => handleChange(idx, "position", e.target.value)}
                 />
               </label>
             </div>
@@ -136,11 +145,11 @@ const WorkExperience: React.FC = () => {
           </div>
         </React.Fragment>
       ))}
-      <div className={`flex gap-4 mt-4 ${workEntries.length === 1 ? "justify-center" : ""}`}>
+      <div className={`flex gap-4 mt-4 ${value.length === 1 ? "justify-center" : ""}`}>
         <Button onClick={addWorkEntry}>
           Add more
         </Button>
-        {workEntries.length > 1 && (
+        {value.length > 1 && (
           <Button onClick={removeLastWorkEntry} className="bg-pink-100 hover:bg-pink-200 border-pink-200">
             Remove last
           </Button>
