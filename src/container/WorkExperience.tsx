@@ -68,7 +68,7 @@ const WorkExperience: React.FC<WorkExperienceProps> = ({ value, setValue }) => {
   };
 
   return (
-    <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center">
+    <div className="bg-violet-50 flex flex-col gap-4 p-10 w-250 border-30 border-white justify-center items-center shadow-lg">
       <div className="text-2xl font-bold text-indigo-950 pb-3">Work Experience</div>
       {value.map((entry, idx) => (
         <React.Fragment key={entry.id}>
