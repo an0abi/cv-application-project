@@ -27,11 +27,11 @@ const Preview: React.FC = () => {
             Back to Editor
           </Button>
         </div>
-        <p className="text-gray-600 p-2">
+        <p className="text-gray-500 p-2">
           This is where the preview of your CV will appear with all the entered
           data
         </p>
-        <div className="border-4 border-gray-500 print:border-0" ref={printRef}>
+        <div className="border-4 border-gray-400 print:border-0" ref={printRef}>
           <div>
             <div className="flex flex-col text-gray-600 text-sm bg-indigo-200 p-6 justify-center">
               <div className="flex items-center justify-between">
@@ -40,7 +40,7 @@ const Preview: React.FC = () => {
                     <img
                       src={state.generalInfo.photo}
                       alt="Photo"
-                      className="w-48 h-48 object-cover rounded-full"
+                      className="w-36 h-36 object-cover rounded-full"
                     />
                     <p className="font-bold text-2xl">
                       {state.generalInfo.name}
@@ -66,7 +66,7 @@ const Preview: React.FC = () => {
                 <div className="text-xs">{state.generalInfo.about}</div>
               </div>
             </div>
-            <div className="p-10 text-3xl">
+            <div className="p-8 text-3xl">
               <div className="flex items-center gap-2">
                 <FaGraduationCap className="text-indigo-600" />
                 <h3 className="font-medium text-gray-800">Education</h3>
@@ -107,7 +107,7 @@ const Preview: React.FC = () => {
                 <p className="text-gray-600 text-sm">No data</p>
               )}
             </div>
-            <div className="p-10 text-3xl">
+            <div className="p-8 text-3xl">
               <div className="flex items-center gap-2">
                 <FaBriefcase className="text-indigo-600" />
                 <h3 className="font-medium text-gray-800">Work Experience</h3>
@@ -150,7 +150,7 @@ const Preview: React.FC = () => {
                 <p className="text-gray-600 text-sm">No data</p>
               )}
             </div>
-            <div className="flex justify-around p-10 text-3xl">
+            <div className="flex justify-around p-8 text-3xl">
               <div className="pb-2 w-1/2 pr-8 border-r border-gray-500">
                 <div className="flex items-center gap-2 mb-4">
                   <FaTools className="text-indigo-600" />
