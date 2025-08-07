@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import PrintButton from "../components/PrintButton";
 import { useCV } from "../context/CVContext";
 import { FaGraduationCap, FaBriefcase, FaTools, FaGlobe } from "react-icons/fa";
 
 const Preview: React.FC = () => {
+
   const navigate = useNavigate();
   const { state } = useCV();
+  const printRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
 
   const handleBackToEditor = () => {
     navigate("/");
@@ -28,8 +31,7 @@ const Preview: React.FC = () => {
           This is where the preview of your CV will appear with all the entered
           data
         </p>
-
-        <div className="border-4 border-gray-500">
+        <div className="border-4 border-gray-500 print:border-0" ref={printRef}>
           <div>
             <div className="flex flex-col text-gray-600 text-sm bg-indigo-200 p-6 justify-center">
               <div className="flex items-center justify-between">
@@ -57,7 +59,7 @@ const Preview: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="pt-8 max-w-1/2">
+              <div className="pt-8 max-w-3/4">
                 <b>
                   About me: <br />
                 </b>
@@ -209,6 +211,9 @@ const Preview: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex justify-end mt-6">
+          <PrintButton contentRef={printRef} />
         </div>
       </div>
     </div>
