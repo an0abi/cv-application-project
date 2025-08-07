@@ -24,9 +24,10 @@ const Education: React.FC<EducationProps> = ({ value, setValue }) => {
     ]);
   };
 
-  const removeLastEducationEntry = () => {
+
+  const removeEducationEntry = (idx: number) => {
     if (value.length > 1) {
-      setValue(value.slice(0, -1));
+      setValue(value.filter((_, i) => i !== idx));
     }
   };
 
@@ -50,7 +51,18 @@ const Education: React.FC<EducationProps> = ({ value, setValue }) => {
           {idx > 0 && (
             <hr className="w-full border-t-2 border-indigo-200 my-4" />
           )}
-          <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col gap-4 w-full relative">
+            {value.length > 1 && (
+              <button
+                type="button"
+                className="absolute top-1 right-0 text-violet-500 text-xl font-bold z-10 hover:text-violet-700"
+                onClick={() => removeEducationEntry(idx)}
+                aria-label="Remove education entry"
+                style={{ background: "none", border: "none", cursor: "pointer" }}
+              >
+                ×
+              </button>
+            )}
             <div className="flex justify-evenly gap-8">
               <label>
                 <InputField
@@ -103,15 +115,10 @@ const Education: React.FC<EducationProps> = ({ value, setValue }) => {
           </div>
         </React.Fragment>
       ))}
-      <div className={`flex gap-4 mt-4 ${value.length === 1 ? "justify-center" : ""}`}>
+      <div className={`flex gap-4 mt-4 justify-center`}>
         <Button onClick={addEducationEntry}>
           Add more
         </Button>
-        {value.length > 1 && (
-          <Button onClick={removeLastEducationEntry} className="bg-pink-100 hover:bg-pink-200 border-pink-200">
-            Remove last
-          </Button>
-        )}
       </div>
     </div>
   );
