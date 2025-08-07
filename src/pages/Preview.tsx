@@ -17,7 +17,7 @@ const Preview: React.FC = () => {
 
   return (
     <div className="justify-center items-center flex flex-col bg-indigo-200 p-10 gap-10 min-h-screen">
-      <div className="w-full max-w-5xl bg-white p-8 shadow-lg">
+      <div className="w-1/2 max-w-5xl bg-white p-8 shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-gray-800 text-3xl font-bold">CV Preview</h1>
           <Button
